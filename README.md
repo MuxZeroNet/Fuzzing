@@ -7,7 +7,7 @@ I conducted a very simple fuzz test for ZeroNet in order to check its robustness
 ## Fuzz it yourself!
 The script `zn_protocol.py` is a simple input sample generator. It produces one properly encoded or corrupted request at a time. Note that this simple script does not cover all of the commands defined in the ZeroNet [protocol](https://zeronet.readthedocs.io/en/latest/help_zeronet/network_protocol/) spec, but you can definitely [help us improve its code coverage!](zn_protocol.py)
 
-I used [radamsa](https://github.com/aoh/radamsa) as the fuzzer. Other fuzzers are also applicable for fuzz testing ZeroNet.
+I used [radamsa](https://github.com/aoh/radamsa) as the fuzzer. Other fuzzers are also applicable for fuzz testing ZeroNet. I ran the fuzz tests in a virtual machine with a clean ZeroNet package.
 
 To generate 20 malformed requests and put them into ZeroNet's File Server port, simply run:
 
