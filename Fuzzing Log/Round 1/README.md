@@ -66,6 +66,23 @@ MessageLoop ended, waiting_requests: 0, sites: 0, buff: 0...
 [22:57:36] FileServer Conn#1355 127.0.0.1    [?] > Incoming connection...
 ```
 
+### Key error
+ZeroNet's implementation expects some JSON keys to always be there. "The error messaging was unclear." said [Mish Ochu](https://github.com/HelloZeroNet/ZeroNet/issues/877), an issue reporter. There are benefits of not relying on uncaught exceptions. Making ZeroNet distinguish between detected errors and unexpected errors reduces logging noise, and more important error messages can be seen easier.
+
+```
+[22:57:35] FileServer Conn#1335 127.0.0.1    [?] > Incoming connection...
+[22:57:35] FileServer Conn#1335 127.0.0.1    [v2] > Socket error: KeyError:
+'site' in Connection.py line 163 > Connection.py line 270 > FileServer.py
+line 43 > FileRequest.py line 82 > OptionalManagerPlugin.py line 79 >
+FileRequest.py line 174
+[22:57:35] FileServer Conn#1335 127.0.0.1    [v2] > Closing connection:
+MessageLoop ended, waiting_requests: 0, sites: 0, buff: 0...
+[22:57:35] FileServer Conn#1336 127.0.0.1    [?] > Incoming connection...
+[22:57:35] FileServer Conn#1336 127.0.0.1    [v2] > Socket error: KeyError:
+'inner_path' in Connection.py line 163 > Connection.py line 270 > FileServer.py
+line 43 > FileRequest.py line 82 > OptionalManagerPlugin.py line 80
+```
+
 ### ASCII decoding error
 Though ZeroNet only allows a subset of ASCII characters to be used as file names, the request handler does not "crash well" when invalid characters are present. Since byte strings and unicode strings are used interchangeably in the source code, I **strongly recommend** the implementer decode byte strings as early as possible before any string comparison takes place. The Python interpreter will **not** throw an exception when it is comparing a unicode string with a malformed byte string. Instead, it will treat the two strings as unequal, which may lead to unexpected behaviors.
 
