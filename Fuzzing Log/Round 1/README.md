@@ -109,3 +109,8 @@ MessageLoop ended, waiting_requests: 0, sites: 0, buff: 0...
 can't decode byte 0xa1 in position 4: ordinal not in range(128) in
 FileRequest.py line 179 > SiteStorage.py line 292
 ```
+
+## Response
+A [pull request](https://github.com/HelloZeroNet/ZeroNet/pull/896) has been submitted to make the File Server throw a "detected error" when any data type is unexpected.
+
+The pull request has not been merged, but with the correction made locally, I continue to fuzz test ZeroNet. More results are being uploaded.
