@@ -1,5 +1,5 @@
 ## About the Results
-ZeroNet logged exceptions immediately after malformed request were put in. Below are some error messages particularly interesting to look at.
+ZeroNet logged exceptions immediately after malformed requests were put in. Below are some error messages particularly interesting to look at.
 
 ### Long call stack
 The log shows a very long call stack found in `fallback.py`, a file in the `msgpack-python` package. In a stack trace, the keyword `fallback.py` appears 23 times, which indicates that `msgpack-python` does not handle deeply nested MessagePack data well, or the corresponding protection is not enabled by the implementer or the client.
