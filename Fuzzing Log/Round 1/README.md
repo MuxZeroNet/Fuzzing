@@ -34,7 +34,7 @@ MessageLoop ended, waiting_requests: 0, sites: 0, buff: 1...
 ### Type error
 ZeroNet's FileServer implementation runs on the assumption that values must be in the expected types. The request handler terminates when trying to call a bound method that does not exist in an instance of an unexpected type. However, the request handler **should** validate data types before processing incoming data, and **should** report detected errors immediately after they are detected. It **should not** throw any unexpected exception when errors can be detected.
 
-In addition, the values of the `to` keys are used directly as list indices. The code does not check for data types and does not check for negative values. In `FileRequest.py`, similar issues are found and shown in the stack trace.
+In `Connection.py`, the values of the `to` keys are used directly as list indices. The code does not check for data types and does not check for negative values. In `FileRequest.py`, similar issues are found and shown in the stack trace.
 
 ```
 [22:43:11] FileServer Conn#93 127.0.0.1    [?] > Incoming connection...
@@ -67,3 +67,28 @@ MessageLoop ended, waiting_requests: 0, sites: 0, buff: 0...
 ```
 
 ### ASCII decoding error
+Though ZeroNet only allows a subset of ASCII characters to be used as file names, the request handler does not "crash well" when invalid characters are present. Since byte strings and unicode strings are used interchangeably in the source code, I **strongly recommend** the implementer decode byte strings as early as possible before any string comparison takes place. The Python interpreter will **not** throw an exception when it is comparing a unicode string with a malformed byte string. Instead, it will treat the two strings as unequal, which may lead to unexpected behaviors.
+
+```python
+>>> request_norm = 'Tamás Kocsis/data/'
+>>> forbidden_folder = u'Tamás Kocsis/data/'
+>>> request_norm, forbidden_folder
+('Tam\xc3\xa1s Kocsis/data/', u'Tam\xe1s Kocsis/data/')
+>>> request_norm == forbidden_folder
+__main__:1: UnicodeWarning: Unicode equal comparison failed to convert both
+arguments to Unicode - interpreting them as being unequal
+False
+>>>
+```
+
+```
+[22:49:20] FileServer GetFile read error: UnicodeDecodeError: 'ascii' codec
+can't decode byte 0xa1 in position 4: ordinal not in range(128) in
+FileRequest.py line 179 > SiteStorage.py line 292
+[22:49:20] FileServer Conn#1182 127.0.0.1    [v2] > Closing connection:
+MessageLoop ended, waiting_requests: 0, sites: 0, buff: 0...
+[22:49:20] FileServer Conn#1183 127.0.0.1    [?] > Incoming connection...
+[22:49:20] FileServer GetFile read error: UnicodeDecodeError: 'ascii' codec
+can't decode byte 0xa1 in position 4: ordinal not in range(128) in
+FileRequest.py line 179 > SiteStorage.py line 292
+```
