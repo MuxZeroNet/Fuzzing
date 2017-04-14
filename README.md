@@ -4,6 +4,12 @@ All about fuzz testing ZeroNet.
 ## What's this?
 I conducted a very simple fuzz test for ZeroNet in order to check its robustness. This test has very little code coverage, but it discovered the inconsistency in ZeroNet's exception handling processes.
 
+## Known results
+| Tests | Issues |
+| :-- | :------ |
+| [Round 1](https://github.com/MuxZeroNet/Fuzzing/tree/master/Fuzzing%20Log/Round%201) | Long call stack, Type error, JSON key error, ASCII decoding error |
+| [Round 2](https://github.com/MuxZeroNet/Fuzzing/tree/master/Fuzzing%20Log/Round%202)  | Working on report... |
+
 ## Fuzz it yourself!
 The script `zn_protocol.py` is a simple input sample generator. It produces one properly encoded or corrupted request at a time. Note that this simple script does not cover all of the commands defined in the ZeroNet [protocol](https://zeronet.readthedocs.io/en/latest/help_zeronet/network_protocol/) spec, but you can definitely [help us improve its code coverage!](zn_protocol.py)
 
